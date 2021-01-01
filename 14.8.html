@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        img{
+            height: 300px;
+        }
+    </style>
+    <script>
+
+        function whenReady() {
+            const btn = document.getElementById("btn_id")
+            const div = document.getElementById("content")
+            const input_page = document.getElementById("input_page")
+            const input_limit = document.getElementById("input_limit")
+
+
+            async function getPics() {
+                let page = input_page.value;
+                let limit = input_limit.value;
+                if ((limit < 0 || limit > 10 || isNaN(+limit)) && (page < 0 || page > 10 || isNaN(+page))) {
+                    div.innerText = 'Номер страницы и лимит вне диапазона от 1 до 10'
+                    return
+                }
+                if (page < 0 || page > 10 || isNaN(+page)) {
+                    div.innerText = 'Номер страницы вне диапазона от 1 до 10'
+                    return
+                }
+                if (limit < 0 || limit > 10 || isNaN(+limit)) {
+                    div.innerText = 'Лимит вне диапазона от 1 до 10'
+                    return
+                }
+                let url = `https://picsum.photos/v2/list?page=${page}&limit=${limit}`
+                let response = await fetch(url);
+                let jsonResponse = await response.json();
+                // console.log(jsonResponse);
+
+                div.innerHTML = "";
+                for (let i = 0; i < limit; i++) {
+                    let img = document.createElement('img');
+                    img.setAttribute('src', `${jsonResponse[i].download_url}`);
+
+                    div.append(img);
+                }
+
+            }
+
+            btn.addEventListener("click", getPics)
+        }
+
+
+        document.addEventListener("DOMContentLoaded", whenReady)
+    </script>
+</head>
+<body>
+<input type="text" placeholder="номер страницы" id="input_page">
+<input type="text" placeholder="лимит" id="input_limit">
+<button id="btn_id">Запрос</button>
+<div id="content"></div>
+</body>
+</html>
