@@ -13,15 +13,15 @@
 
 let x = new Promise(function (resolve, reject) {
     setTimeout((max) => {
-        let number = Math.floor(Math.random() * (max + 1));
-        console.log(number)
+        const number = Math.floor(Math.random() * (max + 1));
+        // console.log(number);
         if (number % 2 === 0) {
             resolve(number)
         } else reject(number)
     }, 1000, 100)
 });
-x.then(function (number) {
-    console.log(`Завершено успешно. Сгенерированное число — ${number}`);
-}, function (number) {
-    console.log(`Завершено с ошибкой. Сгенерированное число — ${number}`);
+x.then(function (evenNumber) {
+    console.log(`Завершено успешно. Сгенерированное число — ${evenNumber}`);
+}, function (oddNumber) {
+    console.log(`Завершено с ошибкой. Сгенерированное число — ${oddNumber}`);
 });
