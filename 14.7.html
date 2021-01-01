@@ -35,34 +35,35 @@
 
         function whenReady() {
             const input = document.getElementById("input_id");
-            const btn = document.getElementById("btn_id");
+            const form = document.getElementById("form")
 
-            async function func() {
-                if (input.value >= 1 && input.value <= 10) {
-                    let userId = input.value;
-                    let url = `https://jsonplaceholder.typicode.com/users/${userId}/todos`
-                    let response = await fetch(url);
-                    let jsonResponse = await response.json()
-                    console.log(jsonResponse);
+            async function func(e) {
+                e.preventDefault()
+                let userId = input.value;
+                let url = `https://jsonplaceholder.typicode.com/users/${userId}/todos`
+                let response = await fetch(url);
+                let jsonResponse = await response.json()
+                // console.log(jsonResponse);
+                if (jsonResponse.length === 0) {
+                    alert("Пользователь с указанным id не найден")
+                    return
+                }
+                if (list !== undefined) {
+                    document.body.removeChild(list);
+                }
+                list = document.createElement("ul");
+                for (let i = 0; i < jsonResponse.length; i++) {
+                    let li = document.createElement("li");
+                    li.innerHTML = `${jsonResponse[i].title}`;
+                    if (jsonResponse[i].completed)
+                        li.classList.add("done")
+                    list.append(li);
+                }
+                document.body.appendChild(list);
 
-                    if (list !== undefined) {
-                        document.body.removeChild(list);
-                    }
-                    list = document.createElement("ul");
-                    for (let i = 0; i < jsonResponse.length; i++) {
-                        let li = document.createElement("li");
-                        li.innerHTML = `${jsonResponse[i].title}`;
-                        if (jsonResponse[i].completed) {
-                            li.classList.add("done")
-                        }
-                        list.append(li);
-                    }
-                    document.body.appendChild(list);
-
-                } else alert("Пользователь с указанным id не найден")
             }
 
-            btn.addEventListener("click", func);
+            form.addEventListener("submit", func);
         }
 
         document.addEventListener("DOMContentLoaded", whenReady)
@@ -70,7 +71,10 @@
     </script>
 </head>
 <body>
-<input type="text" placeholder="Введите ID от 1 до 10" id="input_id">
-<button id="btn_id">Получить список задач</button>
+
+<form id="form">
+    <input type="text" placeholder="Введите ID" id="input_id">
+    <button type="submit" id="btn_id">Получить список задач</button>
+</form>
 </body>
 </html>
