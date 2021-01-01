@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <style>
-        img{
+        img {
             height: 300px;
         }
     </style>
@@ -14,9 +14,10 @@
             const div = document.getElementById("content")
             const input_page = document.getElementById("input_page")
             const input_limit = document.getElementById("input_limit")
+            if (localStorage.getItem('page') !== null && localStorage.getItem('limit') !== null)
+                getPics(localStorage.getItem('page'), localStorage.getItem('limit'))
 
-
-            async function getPics() {
+            function func() {
                 let page = input_page.value;
                 let limit = input_limit.value;
                 if ((limit < 0 || limit > 10 || isNaN(+limit)) && (page < 0 || page > 10 || isNaN(+page))) {
@@ -31,6 +32,10 @@
                     div.innerText = 'Лимит вне диапазона от 1 до 10'
                     return
                 }
+                getPics(page, limit)
+            }
+
+            async function getPics(page, limit) {
                 let url = `https://picsum.photos/v2/list?page=${page}&limit=${limit}`
                 let response = await fetch(url);
                 let jsonResponse = await response.json();
@@ -43,10 +48,12 @@
 
                     div.append(img);
                 }
-
+                localStorage.setItem('page', `${page}`);
+                localStorage.setItem('limit', `${limit}`);
             }
 
-            btn.addEventListener("click", getPics)
+
+            btn.addEventListener("click", func)
         }
 
 
